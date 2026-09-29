@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phiếu học tập - Bài 4: Giao thức mạng</title>
+<style>
+:root{
+  --blue:#2563eb;--blue2:#1d4ed8;--sky:#eaf3ff;--ink:#172033;--muted:#64748b;
+  --green:#16a34a;--greenbg:#ecfdf3;--orange:#f59e0b;--red:#dc2626;
+  --white:#fff;--border:#dbe4f0;--shadow:0 10px 30px rgba(37,99,235,.10);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:"Segoe UI",Arial,sans-serif;color:var(--ink);
+  background:linear-gradient(180deg,#eef6ff 0,#f8fbff 42%,#f4f7fb 100%);
+  line-height:1.55;
+}
+header{
+  background:linear-gradient(135deg,#1d4ed8,#2563eb 55%,#38bdf8);
+  color:#fff;padding:34px 18px 48px;position:relative;overflow:hidden;
+}
+header:after{content:"";position:absolute;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.09);right:-90px;top:-130px}
+.hero{max-width:1050px;margin:auto;position:relative;z-index:1}
+.badge{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);padding:6px 12px;border-radius:999px;font-size:.85rem;font-weight:700}
+h1{font-size:clamp(1.8rem,4vw,3rem);margin:12px 0 4px;letter-spacing:-.5px}
+.subtitle{font-size:1.05rem;opacity:.94;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.meta span{background:#fff;color:#1e40af;padding:7px 12px;border-radius:10px;font-weight:700;font-size:.9rem}
+.container{max-width:1050px;margin:-24px auto 50px;padding:0 16px;position:relative}
+.card{background:var(--white);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:22px;margin-bottom:18px}
+.info-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px}
+label{font-weight:700;font-size:.92rem;display:block;margin-bottom:6px}
+input[type=text],textarea{
+  width:100%;border:1.5px solid #cbd5e1;border-radius:10px;padding:11px 12px;
+  font:inherit;color:var(--ink);background:#fff;outline:none;transition:.2s;
+}
+input[type=text]:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+textarea{min-height:105px;resize:vertical}
+.task-head{display:flex;align-items:flex-start;gap:13px}
+.icon{width:44px;height:44px;display:grid;place-items:center;border-radius:13px;background:var(--sky);font-size:1.35rem;flex:0 0 auto}
+.task-title{margin:0;font-size:1.18rem;color:#173a7a}
+.task-sub{margin:2px 0 0;color:var(--muted);font-size:.92rem}
+.question{margin:18px 0 10px;font-weight:700}
+.options{display:grid;gap:9px;margin:10px 0 16px}
+.option{
+  display:flex;align-items:center;gap:10px;border:1px solid var(--border);padding:11px 12px;border-radius:11px;
+  cursor:pointer;background:#fbfdff;transition:.18s;
+}
+.option:hover{border-color:#93c5fd;background:#f5f9ff}
+.option input{accent-color:var(--blue);transform:scale(1.1)}
+.mac{font-family:Consolas,monospace;background:#eff6ff;border:1px solid #bfdbfe;border-radius:9px;padding:10px 13px;margin:8px 0;display:inline-block}
+.code-observe{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0}
+.binary{font-family:Consolas,monospace;font-size:1.05rem;letter-spacing:2px;background:#0f172a;color:#dbeafe;border-radius:10px;padding:12px 15px}
+.ai-box{background:linear-gradient(135deg,#f5f3ff,#eef6ff);border:1px solid #c7d2fe;border-radius:13px;padding:14px;margin:12px 0}
+.prompt{font-family:Consolas,monospace;background:#fff;border-left:4px solid #6366f1;padding:12px;border-radius:7px}
+.conclusion{
+  background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;padding:15px
+}
+.actions{display:flex;flex-wrap:wrap;gap:10px;position:sticky;bottom:12px;z-index:5}
+button{
+  border:0;border-radius:11px;padding:12px 18px;font:700 1rem inherit;cursor:pointer;transition:.18s
+}
+.primary{background:var(--blue);color:#fff;box-shadow:0 6px 16px rgba(37,99,235,.25)}
+.primary:hover{background:var(--blue2)}
+.secondary{background:#fff;color:#1e40af;border:1px solid #bfdbfe}
+.success{background:var(--greenbg);color:#166534;border:1px solid #bbf7d0}
+#result{display:none}
+.result-title{font-size:1.25rem;margin:0 0 8px;color:#166534}
+.progress-wrap{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;margin:10px 0}
+.progress{height:100%;width:0;background:linear-gradient(90deg,#2563eb,#22c55e);transition:.4s}
+footer{text-align:center;color:#64748b;padding:0 16px 35px;font-size:.9rem}
+.small{font-size:.84rem;color:var(--muted)}
+@media(max-width:760px){
+  .info-grid{grid-template-columns:1fr}
+  .card{padding:17px}
+  header{padding:28px 15px 42px}
+  .container{padding:0 11px}
+  .actions{position:static}
+  button{width:100%}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="hero">
+    <span class="badge">TIN HỌC 12 • PHIẾU HỌC TẬP TRỰC TUYẾN</span>
+    <h1>🌐 BÀI 4 – GIAO THỨC MẠNG</h1>
+    <p class="subtitle">Tiết 1 · Thời lượng: 20–25 phút</p>
+    <div class="meta">
+      <span>📡 Network Protocol</span><span>🏷 MAC Address</span><span>📦 Ethernet Frame</span><span>🤖 AI Challenge</span>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <section class="card">
+    <h2 style="margin-top:0">👤 Thông tin học sinh</h2>
+    <div class="info-grid">
+      <div><label for="name">Họ tên</label><input id="name" type="text" placeholder="Nhập họ và tên"></div>
+      <div><label for="class">Lớp</label><input id="class" type="text" placeholder="12..."></div>
+      <div><label for="group">Nhóm</label><input id="group" type="text" placeholder="Nhóm..."></div>
+    </div>
+  </section>
+
+  <div class="card">
+    <div class="task-head"><div class="icon">📡</div><div><h2 class="task-title">NHIỆM VỤ 1 · GIAO THỨC MẠNG LÀ GÌ?</h2><p class="task-sub">Từ tình huống giao tiếp giữa các thiết bị.</p></div></div>
+    <p class="question">Theo em, tại sao các thiết bị trong mạng phải tuân theo cùng một bộ quy tắc?</p>
+    <textarea id="q1" placeholder="Hãy giải thích bằng ngôn ngữ của em..."></textarea>
+  </div>
+
+  <div class="card">
+    <div class="task-head"><div class="icon">🏷</div><div><h2 class="task-title">NHIỆM VỤ 2 · ĐỊA CHỈ MAC</h2><p class="task-sub">Quan sát hai địa chỉ MAC dưới đây.</p></div></div>
+    <div class="mac">18-03-73-95-D1-1A</div>
+    <div class="mac">94-39-E5-DE-B1-F1</div>
+    <p class="question">Địa chỉ MAC dùng để làm gì?</p>
+    <div class="options">
+      <label class="option"><input type="checkbox" name="q2" value="nhan-dien"> Nhận diện thiết bị</label>
+      <label class="option"><input type="checkbox" name="q2" value="luu-du-lieu"> Lưu dữ liệu</label>
+      <label class="option"><input type="checkbox" name="q2" value="quan-ly"> Quản lý người dùng</label>
+      <label class="option"><input type="checkbox" name="q2" value="hinh-anh"> Truyền hình ảnh</label>
+    </div>
+    <textarea id="q2text" placeholder="Giải thích ngắn gọn..."></textarea>
+  </div>
+
+  <div class="card">
+    <div class="task-head"><div class="icon">📦</div><div><h2 class="task-title">NHIỆM VỤ 3 · KHUNG DỮ LIỆU</h2><p class="task-sub">Chọn dạng dữ liệu được Ethernet sử dụng khi truyền.</p></div></div>
+    <p class="question">Dữ liệu trong Ethernet được truyền dưới dạng:</p>
+    <div class="options">
+      <label class="option"><input type="radio" name="q3" value="packet"> Packet</label>
+      <label class="option"><input type="radio" name="q3" value="frame"> Frame</label>
+      <label class="option"><input type="radio" name="q3" value="folder"> Folder</label>
+      <label class="option"><input type="radio" name="q3" value="program"> Program</label>
+    </div>
+    <textarea id="q3text" placeholder="Vì sao em chọn đáp án đó?"></textarea>
+  </div>
+
+  <div class="card">
+    <div class="task-head"><div class="icon">✅</div><div><h2 class="task-title">NHIỆM VỤ 4 · PHÁT HIỆN LỖI</h2><p class="task-sub">So sánh hai chuỗi dữ liệu quan sát được.</p></div></div>
+    <div class="code-observe"><div class="binary">0110011010</div><div class="binary">01100110</div></div>
+    <p class="question">Theo em, nếu dữ liệu bị lỗi thì giao thức phải làm gì?</p>
+    <textarea id="q4" placeholder="Nêu cơ chế xử lí mà em cho là phù hợp..."></textarea>
+  </div>
+
+  <div class="card">
+    <div class="task-head"><div class="icon">🧩</div><div><h2 class="task-title">NHIỆM VỤ 5 · TÌNH HUỐNG</h2><p class="task-sub">Một học sinh gửi tệp qua mạng LAN. Trong quá trình truyền dữ liệu bị lỗi.</p></div></div>
+    <p class="question">Điều gì xảy ra?</p>
+    <div class="options">
+      <label class="option"><input type="radio" name="q5" value="huy"> Dữ liệu bị hủy</label>
+      <label class="option"><input type="radio" name="q5" value="gui-lai"> Gửi lại</label>
+      <label class="option"><input type="radio" name="q5" value="tat"> Máy tính tắt</label>
+      <label class="option"><input type="radio" name="q5" value="khong"> Không có gì xảy ra</label>
+    </div>
+    <textarea id="q5text" placeholder="Giải thích điều em dự đoán..."></textarea>
+  </div>
+
+  <div class="card">
+    <div class="task-head"><div class="icon">🤖</div><div><h2 class="task-title">NHIỆM VỤ 6 · AI CHALLENGE</h2><p class="task-sub">Sử dụng AI để kiểm tra cách giải thích của em.</p></div></div>
+    <div class="ai-box">
+      <strong>Prompt gợi ý:</strong>
+      <div class="prompt">"Hãy giải thích giao thức mạng cho học sinh lớp 12 bằng ví dụ đời thường."</div>
+      <p class="small">Có thể dùng ChatGPT hoặc Copilot. Không nhập thông tin cá nhân hoặc dữ liệu nhạy cảm.</p>
+    </div>
+    <label for="q6">AI trả lời:</label>
+    <textarea id="q6" placeholder="Ghi lại hoặc tóm tắt câu trả lời của AI..."></textarea>
+    <p class="question">Đánh giá câu trả lời của AI:</p>
+    <div class="options">
+      <label class="option"><input type="radio" name="q6eval" value="dung"> Đúng</label>
+      <label class="option"><input type="radio" name="q6eval" value="thieu"> Thiếu</label>
+      <label class="option"><input type="radio" name="q6eval" value="chuachinhxac"> Chưa chính xác</label>
+    </div>
+    <textarea id="q6reason" placeholder="Giải thích vì sao em đánh giá như vậy..."></textarea>
+  </div>
+
+  <div class="card">
+    <div class="task-head"><div class="icon">🎯</div><div><h2 class="task-title">NHIỆM VỤ 7 · KẾT LUẬN</h2><p class="task-sub">Chốt lại ý nghĩa của giao thức mạng.</p></div></div>
+    <div class="conclusion">
+      <strong>Hoàn thành câu:</strong>
+      <p style="font-size:1.08rem">“Giao thức mạng là …”</p>
+      <textarea id="q7" placeholder="Viết định nghĩa của em bằng 1–2 câu..."></textarea>
+    </div>
+  </div>
+
+  <section class="card" id="result">
+    <h2 class="result-title">🎉 Đã ghi nhận phiếu học tập</h2>
+    <div id="resultText"></div>
+    <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+    <p class="small">Kết quả tương tác được lưu trên thiết bị này. Giáo viên có thể yêu cầu học sinh chụp màn hình kết quả hoặc tích hợp thêm Google Forms/Apps Script nếu cần thu bài tập trung.</p>
+  </section>
+
+  <div class="actions">
+    <button class="primary" onclick="submitForm()">🚀 Nộp phiếu</button>
+    <button class="secondary" onclick="saveDraft()">💾 Lưu tạm</button>
+    <button class="secondary" onclick="loadDraft()">↩️ Khôi phục</button>
+    <button class="secondary" onclick="window.print()">🖨 In phiếu</button>
+  </div>
+</main>
+
+<footer>
+  BÀI 4 – GIAO THỨC MẠNG · Tin học 12 · Phiếu học tập trực tuyến
+</footer>
+
+<script>
+const fields = ["name","class","group","q1","q2text","q3text","q4","q5text","q6","q6reason","q7"];
+function getState(){
+  const data={};
+  fields.forEach(id=>data[id]=document.getElementById(id)?.value||"");
+  ["q2","q3","q5","q6eval"].forEach(name=>{
+    if(name==="q2") data[name]=[...document.querySelectorAll('input[name="q2"]:checked')].map(x=>x.value);
+    else data[name]=document.querySelector('input[name="'+name+'"]:checked')?.value||"";
+  });
+  return data;
+}
+function applyState(data){
+  fields.forEach(id=>{if(document.getElementById(id)&&data[id]!==undefined)document.getElementById(id).value=data[id]});
+  document.querySelectorAll('input[name="q2"]').forEach(x=>x.checked=(data.q2||[]).includes(x.value));
+  ["q3","q5","q6eval"].forEach(name=>{
+    document.querySelectorAll('input[name="'+name+'"]').forEach(x=>x.checked=x.value===data[name]);
+  });
+}
+function saveDraft(){
+  localStorage.setItem("bai4_giao_thuc_mang_phieu",JSON.stringify(getState()));
+  alert("Đã lưu tạm phiếu trên thiết bị này.");
+}
+function loadDraft(){
+  const raw=localStorage.getItem("bai4_giao_thuc_mang_phieu");
+  if(!raw){alert("Chưa có bản lưu.");return}
+  applyState(JSON.parse(raw)); alert("Đã khôi phục bản lưu.");
+}
+function countAnswered(){
+  let n=0;
+  ["q1","q2text","q3text","q4","q5text","q6","q6reason","q7"].forEach(id=>{
+    if((document.getElementById(id)?.value||"").trim())n++;
+  });
+  if(document.querySelectorAll('input[name="q2"]:checked').length)n++;
+  if(document.querySelector('input[name="q3"]:checked'))n++;
+  if(document.querySelector('input[name="q5"]:checked'))n++;
+  if(document.querySelector('input[name="q6eval"]:checked'))n++;
+  return n;
+}
+function submitForm(){
+  const d=getState();
+  if(!d.name.trim()){alert("Hãy nhập Họ tên trước khi nộp phiếu.");document.getElementById("name").focus();return}
+  const answered=countAnswered(), total=12;
+  localStorage.setItem("bai4_giao_thuc_mang_phieu",JSON.stringify(d));
+  document.getElementById("result").style.display="block";
+  document.getElementById("resultText").innerHTML=
+    `<p><strong>${escapeHtml(d.name)}</strong> · Lớp ${escapeHtml(d.class||"—")} · Nhóm ${escapeHtml(d.group||"—")}</p>
+     <p>Đã hoàn thành <strong>${answered}/${total}</strong> mục tương tác. Đây là chỉ báo mức độ hoàn thành, không thay thế đánh giá của giáo viên.</p>`;
+  document.getElementById("progress").style.width=Math.round(answered/total*100)+"%";
+  document.getElementById("result").scrollIntoView({behavior:"smooth"});
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+window.addEventListener("load",()=>{
+  const raw=localStorage.getItem("bai4_giao_thuc_mang_phieu");
+  if(raw){try{applyState(JSON.parse(raw))}catch(e){}}
+});
+</script>
+</body>
+</html>
